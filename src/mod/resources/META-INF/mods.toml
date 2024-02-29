@@ -6,7 +6,7 @@ modId="mixinbooster"
 version="${file.jarVersion}"
 displayName="Mixin Booster"
 description='''
-Fabric Mixin on Forge
+Fabric Mixin on NeoForge
 No more pain or suffering for mod developers
 '''
 authors="Su5ed, Matyrobbrt"

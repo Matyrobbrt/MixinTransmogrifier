@@ -1,7 +1,7 @@
 package org.sinytra.mixinbooster;
 
 import cpw.mods.jarhandling.SecureJar;
-import net.minecraftforge.fml.loading.LoadingModList;
+import net.neoforged.fml.loading.LoadingModList;
 import org.spongepowered.asm.util.Constants;
 
 import java.io.InputStream;
@@ -9,7 +9,6 @@ import java.lang.module.ModuleDescriptor;
 import java.net.URI;
 import java.nio.file.Path;
 import java.security.CodeSigner;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.jar.Attributes;
@@ -31,7 +30,7 @@ public class GeneratedMixinClassesSecureJar implements SecureJar {
             if (descriptor == null) {
                 String argsPkg = Constants.SYNTHETIC_PACKAGE + ".args";
                 boolean exists = LoadingModList.get().getModFiles().stream()
-                    .anyMatch(modFileInfo -> modFileInfo.getFile().getSecureJar().getPackages().contains(argsPkg));
+                    .anyMatch(modFileInfo -> modFileInfo.getFile().getSecureJar().moduleDataProvider().descriptor().packages().contains(argsPkg));
                 descriptor = ModuleDescriptor.newAutomaticModule(name())
                     .packages(exists ? Set.of() : Set.of(Constants.SYNTHETIC_PACKAGE, argsPkg))
                     .build();
@@ -100,16 +99,6 @@ public class GeneratedMixinClassesSecureJar implements SecureJar {
     @Override
     public boolean hasSecurityData() {
         return false;
-    }
-
-    @Override
-    public Set<String> getPackages() {
-        return moduleDataProvider().descriptor().packages();
-    }
-
-    @Override
-    public List<Provider> getProviders() {
-        return List.of();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package org.sinytra.mixinbooster;
 
-import net.minecraftforge.fml.loading.moddiscovery.AbstractJarFileModLocator;
+import net.neoforged.fml.loading.moddiscovery.AbstractJarFileModLocator;
 
 import java.nio.file.Path;
 import java.util.Map;

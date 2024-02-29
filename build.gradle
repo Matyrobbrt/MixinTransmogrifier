@@ -1,11 +1,12 @@
 import com.matyrobbrt.gradle.jarinjar.task.AbstractJarInJarTask
 
 plugins {
-    id 'java'
+    id 'idea'
+    id 'java-library'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '5.1.+'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
-    id 'com.matyrobbrt.jarinjar' version '1.1.+'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'com.matyrobbrt.jarinjar' version '1.2.0'
+    id 'net.neoforged.gradle.userdev' version '7.0.96'
 }
 
 group = 'org.sinytra.mixinbooster'
@@ -13,20 +14,26 @@ version = version + '+' + minecraft_version
 
 java {
     withSourcesJar()
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 sourceSets {
     mod
+    dummy
 }
 
-minecraft {
-    mappings channel: 'official', version: minecraft_version
-    runs {
-        configureEach {
-            workingDirectory project.file('run')
+final fullJar = tasks.register("fullJar", AbstractJarInJarTask)
+
+runs {
+    configureEach {
+        modSource sourceSets.main
+        dependencies {
+            runtime(files(fullJar.map { it.archiveFile }))
         }
-        client {}
     }
+    client {}
 }
 
 configurations {
@@ -54,12 +61,9 @@ repositories {
     }
 }
 
-final fullJar = tasks.register("fullJar", AbstractJarInJarTask)
-
 dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    implementation "net.neoforged:neoforge:${neoforge_version}"
     fabricMixin "dev.su5ed.sinytra:sponge-mixin:${mixin_version}"
-    runtimeOnly(files(fullJar.map { it.archiveFile }))
 }
 
 tasks.register('modJar', Jar) {
@@ -122,8 +126,6 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
-            // Remove forge dependency from pom, disable gradle module metadata
-            fg.component it
         }
     }
     def ENV = System.getenv()
